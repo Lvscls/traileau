@@ -17,7 +17,7 @@ onMounted(() => {
 
 const createProject = () => {
   const project = {
-    id: Date.now(),
+    id: crypto.randomUUID(),
     ...newProject.value,
     createdAt: new Date().toISOString(),
   };
@@ -90,26 +90,14 @@ const createProject = () => {
 
         <button
           type="submit"
-          class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+          class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
         >
           Créer le projet
         </button>
       </form>
     </div>
 
-    <div class="mt-8 space-y-4">
-      <div
-        v-for="project in projects"
-        :key="project.id"
-        class="bg-white shadow-md rounded-lg p-6"
-      >
-        <h3 class="text-lg font-semibold text-gray-800">{{ project.name }}</h3>
-        <p class="text-gray-600 mt-2">{{ project.description }}</p>
-        <div class="mt-4 text-sm text-gray-500">
-          Date limite: {{ new Date(project.deadline).toLocaleDateString() }}
-        </div>
-      </div>
-    </div>
+   
   </div>
 </template>
 

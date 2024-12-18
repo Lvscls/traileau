@@ -1,180 +1,165 @@
 <template>
-    <div class="project-dashboard">
-      <h1>Tableau de bord : {{ project.name }}</h1>
-  
-      <div class="task-form">
-        <h3>Créer une nouvelle tâche</h3>
-        <form @submit.prevent="addTask">
-          <input v-model="newTask.title" placeholder="Titre de la tâche" required />
-          <select v-model="newTask.assignee">
+  <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto space-y-8 bg-white p-8 rounded-lg shadow-md">
+      <h1 class="text-3xl font-extrabold text-gray-900 text-center">
+        Tableau de bord : {{ project.name }}
+      </h1>
+
+      <div class="space-y-6">
+        <h3 class="text-xl font-bold text-gray-900">Créer une nouvelle tâche</h3>
+        <form @submit.prevent="addTask" class="space-y-4">
+          <input 
+            v-model="newTask.title" 
+            placeholder="Titre de la tâche" 
+            required 
+            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+          />
+          <select 
+            v-model="newTask.assignee"
+            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+          >
             <option value="">Aucun assigné</option>
             <option v-for="user in users" :key="user.username" :value="user.username">
               {{ user.username }}
             </option>
           </select>
-          <button type="submit">Ajouter</button>
+          <button 
+            type="submit"
+            class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Ajouter
+          </button>
         </form>
       </div>
       
-      <h3>Liste des tâches</h3>
-      <ul>
-        <li v-for="(task, index) in project.tasks" :key="task.id" class="task-item">
-          <strong>{{ task.title }}</strong> - 
-          <span :class="{'completed': task.status === 'Validé'}">
-            {{ task.status }}
-          </span> 
-          <span v-if="task.assignee"> | Assigné à : {{ task.assignee }}</span>
-          
-          <!-- Actions -->
-          <div class="task-actions">
-            <button @click="validateTask(index)" v-if="task.status !== 'Validé'">Valider</button>
-            <button @click="editTask(index)">Modifier</button>
-            <button @click="deleteTask(index)">Supprimer</button>
-            <button @click="assignTask(index)">Assigner</button>
-          </div>
-        </li>
-      </ul>
+      <div class="space-y-4">
+        <h3 class="text-xl font-bold text-gray-900">Liste des tâches</h3>
+        <ul class="space-y-3">
+          <li v-for="(task, index) in project.tasks" :key="task.id" 
+              class="p-4 border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex justify-between items-center">
+              <div>
+                <strong class="text-gray-900">{{ task.title }}</strong>
+                <span :class="{'text-green-600 font-medium': task.status === 'Validé'}" class="ml-2">
+                  {{ task.status }}
+                </span>
+                <span v-if="task.assignee" class="text-gray-600 ml-2">
+                  | Assigné à : {{ task.assignee }}
+                </span>
+              </div>
+              
+              <div class="space-x-2">
+                <button 
+                  v-if="task.status !== 'Validé'"
+                  @click="validateTask(index)"
+                  class="px-3 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                >
+                  Valider
+                </button>
+                <button 
+                  @click="editTask(index)"
+                  class="px-3 py-1 text-sm text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Modifier
+                </button>
+                <button 
+                  @click="deleteTask(index)"
+                  class="px-3 py-1 text-sm text-white bg-red-600 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                >
+                  Supprimer
+                </button>
+                <button 
+                  @click="assignTask(index)"
+                  class="px-3 py-1 text-sm text-white bg-gray-600 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                >
+                  Assigner
+                </button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        project: {},
-        users: [],
-        newTask: {
-          title: '',
-          assignee: ''
-        },
-        editIndex: null
-      };
-    },
-    created() {
-      this.loadData();
-    },
-    methods: {
-      loadData() {
-        const projects = JSON.parse(localStorage.getItem('projects')) || [];
-        const projectId = parseInt(this.$route.params.id);
-        this.project = projects.find(p => p.id === projectId) || { tasks: [] };
-  
-        const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-        this.users = storedUsers;
-      },
-  
-      addTask() {
-        if (this.newTask.title.trim()) {
-          this.project.tasks.push({
-            id: Date.now(),
-            title: this.newTask.title,
-            assignee: this.newTask.assignee,
-            status: 'Non validé'
-          });
-          this.saveData();
-          this.resetTaskForm();
-        }
-      },
-  
-      // Valider une tâche
-      validateTask(index) {
-        this.project.tasks[index].status = 'Validé';
-        this.saveData();
-      },
-  
-      // Modifier une tâche
-      editTask(index) {
-        this.editIndex = index;
-        this.newTask.title = this.project.tasks[index].title;
-        this.newTask.assignee = this.project.tasks[index].assignee;
-      },
-  
-      deleteTask(index) {
-        this.project.tasks.splice(index, 1);
-        this.saveData();
-      },
-  
-      assignTask(index) {
-        const assignee = prompt('Entrez le nom de l\'utilisateur à assigner :');
-        if (assignee) {
-          this.project.tasks[index].assignee = assignee;
-          this.saveData();
-        }
-      },
+  </div>
+</template>
 
-      saveData() {
-        const projects = JSON.parse(localStorage.getItem('projects')) || [];
-        const updatedProjects = projects.map(p => (p.id === this.project.id ? this.project : p));
-        localStorage.setItem('projects', JSON.stringify(updatedProjects));
-      },
-  
-      resetTaskForm() {
-        this.newTask = { title: '', assignee: '' };
-        this.editIndex = null;
-      }
-    }
-  };
-  </script>
-  
-  <style scoped>
-  .project-dashboard {
-    padding: 20px;
-    font-family: Arial, sans-serif;
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+
+const project = ref({});
+const users = ref([]);
+const newTask = ref({
+  title: '',
+  assignee: ''
+});
+const editIndex = ref(null);
+const route = useRoute();
+
+
+onMounted(() => {
+  loadData();
+});
+
+
+const loadData = () => {
+  const projects = JSON.parse(localStorage.getItem('projects')) || [];
+  const projectId = parseInt(route.params.id);
+  project.value = projects.find(p => p.id === projectId) || { tasks: [] };
+
+  const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+  users.value = storedUsers;
+};
+
+const addTask = () => {
+  if (newTask.value.title.trim()) {
+    project.value.tasks.push({
+      id: Date.now(),
+      title: newTask.value.title,
+      assignee: newTask.value.assignee,
+      status: 'Non validé'
+    });
+    saveData();
+    resetTaskForm();
   }
-  
-  h1 {
-    color: #42b983;
+};
+
+const validateTask = (index) => {
+  project.value.tasks[index].status = 'Validé';
+  saveData();
+};
+
+const editTask = (index) => {
+  editIndex.value = index;
+  newTask.value.title = project.value.tasks[index].title;
+  newTask.value.assignee = project.value.tasks[index].assignee;
+};
+
+const deleteTask = (index) => {
+  project.value.tasks.splice(index, 1);
+  saveData();
+};
+
+const assignTask = (index) => {
+  const assignee = prompt('Entrez le nom de l\'utilisateur à assigner :');
+  if (assignee) {
+    project.value.tasks[index].assignee = assignee;
+    saveData();
   }
+};
+
+const saveData = () => {
+  const projects = JSON.parse(localStorage.getItem('projects')) || [];
+  const updatedProjects = projects.map(p => 
+    p.id === project.value.id ? project.value : p
+  );
+  localStorage.setItem('projects', JSON.stringify(updatedProjects));
+};
+
+const resetTaskForm = () => {
+  newTask.value = { title: '', assignee: '' };
+  editIndex.value = null;
+};
+</script>
   
-  .task-form {
-    margin-bottom: 20px;
-  }
-  
-  .task-form input,
-  .task-form select {
-    margin-right: 10px;
-    padding: 5px;
-  }
-  
-  .task-form button {
-    background-color: #42b983;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-  }
-  
-  .task-form button:hover {
-    background-color: #369870;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .task-item {
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  .task-item .completed {
-    color: green;
-    font-weight: bold;
-  }
-  
-  .task-actions button {
-    margin-right: 5px;
-    padding: 5px;
-    border: none;
-    background-color: #f0f0f0;
-    cursor: pointer;
-  }
-  
-  .task-actions button:hover {
-    background-color: #ddd;
-  }
-  </style>
   
