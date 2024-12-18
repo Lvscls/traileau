@@ -41,31 +41,28 @@
   export default {
     data() {
       return {
-        project: {}, // Projet actuel
-        users: [], // Liste des utilisateurs disponibles
+        project: {},
+        users: [],
         newTask: {
           title: '',
           assignee: ''
         },
-        editIndex: null // Pour la modification des tâches
+        editIndex: null
       };
     },
     created() {
       this.loadData();
     },
     methods: {
-      // Charger les données depuis localStorage
       loadData() {
         const projects = JSON.parse(localStorage.getItem('projects')) || [];
         const projectId = parseInt(this.$route.params.id);
         this.project = projects.find(p => p.id === projectId) || { tasks: [] };
   
-        // Charger les utilisateurs
         const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
         this.users = storedUsers;
       },
   
-      // Ajouter une nouvelle tâche
       addTask() {
         if (this.newTask.title.trim()) {
           this.project.tasks.push({
@@ -92,13 +89,11 @@
         this.newTask.assignee = this.project.tasks[index].assignee;
       },
   
-      // Supprimer une tâche
       deleteTask(index) {
         this.project.tasks.splice(index, 1);
         this.saveData();
       },
   
-      // Assigner une tâche à un utilisateur
       assignTask(index) {
         const assignee = prompt('Entrez le nom de l\'utilisateur à assigner :');
         if (assignee) {
@@ -106,15 +101,13 @@
           this.saveData();
         }
       },
-  
-      // Sauvegarder les modifications dans localStorage
+
       saveData() {
         const projects = JSON.parse(localStorage.getItem('projects')) || [];
         const updatedProjects = projects.map(p => (p.id === this.project.id ? this.project : p));
         localStorage.setItem('projects', JSON.stringify(updatedProjects));
       },
   
-      // Réinitialiser le formulaire de tâche
       resetTaskForm() {
         this.newTask = { title: '', assignee: '' };
         this.editIndex = null;
