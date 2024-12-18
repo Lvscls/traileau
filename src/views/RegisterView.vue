@@ -5,42 +5,36 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const errorMessage = ref('');
 
-
-function handleLogin(e) {
+function handleRegister(e) {
     e.preventDefault();
-    const user = {
+    const newUser = {
         username: e.target.username.value,
         password: e.target.password.value
     };
 
     const users = JSON.parse(localStorage.getItem('users')) || [];
 
-    const foundUser = users.find(u => u.username === user.username);
+    const foundUser = users.find(u => u.username === newUser.username);
 
-    if (!foundUser) {
-        errorMessage.value = 'Utilisateur inconnu';
+    if (foundUser) {
+        errorMessage.value = 'Nom d\'utilisateur déjà pris';
         return;
     }
 
-    if (foundUser.password !== user.password) {
-        errorMessage.value = 'Mot de passe incorrect';
-        return;
-    }
-
-    localStorage.setItem('currentUser', JSON.stringify(user));
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
     router.push('/projects');
 }
-
 </script>
-
 <template>
     <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                Connexion
+                Inscription
             </h2>
             <p v-if="errorMessage" class="text-center text-red-600">{{ errorMessage }}</p>
-            <form @submit.prevent="handleLogin" class="mt-8 space-y-6">
+            <form @submit.prevent="handleRegister" class="mt-8 space-y-6">
                 <div class="rounded-md shadow-sm space-y-4">
                     <input 
                         name="username" 
@@ -60,10 +54,10 @@ function handleLogin(e) {
                     type="submit"
                     class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Se connecter
+                    S'inscrire
                 </button>
             </form>
-            <p class="text-xs text-center">Vous n'avez pas encore de compte <router-link to="/register" class=" text-indigo-600 hover:text-indigo-700">s'inscrire</router-link></p>
+            <p class="text-xs text-center">Vous avez déjà un compte <router-link to="/" class=" text-indigo-600 hover:text-indigo-700">se connecter</router-link></p>
         </div>
     </div>
 </template>
