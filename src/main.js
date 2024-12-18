@@ -4,7 +4,4 @@ import App from "./App.vue";
 import router from "./router";
 import { createPinia } from "pinia";
 
-createApp(App)
-  .use(router) // use pour injecter le router dans l'application vue
-  .use(createPinia())
-  .mount("#app");
+createApp(App).use(router).use(createPinia()).mount("#app");

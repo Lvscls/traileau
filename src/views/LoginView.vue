@@ -1,36 +1,35 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import useUserStore from '../store/userStore';
 
 const router = useRouter();
+const userStore = useUserStore();
 const errorMessage = ref('');
 
 function handleLogin(e) {
-  e.preventDefault();
-  const user = {
-    username: e.target.username.value,
-    password: e.target.password.value
-  };
+    e.preventDefault();
+    const user = {
+        username: e.target.username.value,
+        password: e.target.password.value
+    };
 
-  const users = JSON.parse(localStorage.getItem('users')) || [];
+    const users = JSON.parse(localStorage.getItem('users')) || [];
 
-  const foundUser = users.find(u => u.username === user.username);
+    const foundUser = users.find(u => u.username === user.username);
 
-  if (!foundUser) {
-    errorMessage.value = 'Utilisateur inconnu';
-    return;
-  }
+    if (!foundUser) {
+        errorMessage.value = 'Utilisateur inconnu';
+        return;
+    }
 
-  if (foundUser.password !== user.password) {
-    errorMessage.value = 'Mot de passe incorrect';
-    return;
-  }
+    if (foundUser.password !== user.password) {
+        errorMessage.value = 'Mot de passe incorrect';
+        return;
+    }
 
-  localStorage.setItem('currentUser', JSON.stringify({
-    username: foundUser.username,
-    role: foundUser.role
-  }));
-  router.push('/projects');
+    userStore.setCurrentUser(foundUser);
+    router.push('/projects');
 }
 </script>
 

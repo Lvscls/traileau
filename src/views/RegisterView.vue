@@ -1,30 +1,32 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import useUserStore from '../store/userStore';
 
 const router = useRouter();
+const userStore = useUserStore();
 const errorMessage = ref('');
 
 function handleRegister(e) {
-  e.preventDefault();
-  const newUser = {
-    username: e.target.username.value,
-    password: e.target.password.value,
-    role: e.target.role.value
-  };
+    e.preventDefault();
+    const newUser = {
+        username: e.target.username.value,
+        password: e.target.password.value
+    };
 
-  const users = JSON.parse(localStorage.getItem('users')) || [];
+    const users = JSON.parse(localStorage.getItem('users')) || [];
 
-  const foundUser = users.find(u => u.username === newUser.username);
+    const foundUser = users.find(u => u.username === newUser.username);
 
-  if (foundUser) {
-    errorMessage.value = 'Nom d\'utilisateur déjà pris';
-    return;
-  }
+    if (foundUser) {
+        errorMessage.value = 'Nom d\'utilisateur déjà pris';
+        return;
+    }
 
-  users.push(newUser);
-  localStorage.setItem('users', JSON.stringify(users));
-  router.push('/projects');
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    userStore.setCurrentUser(newUser);
+    router.push('/projects');
 }
 </script>
 
@@ -58,6 +60,7 @@ function handleRegister(e) {
             <option value="" disabled selected>Choisir un rôle</option>
             <option value="developer">Développeur</option>
             <option value="manager">Manager</option>
+            <option value="manager/développeur">Manager/développeur</option>
           </select>
         </div>
         <button
