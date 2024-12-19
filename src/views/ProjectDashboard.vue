@@ -130,6 +130,16 @@ const addTask = () => {
       assignee: newTask.value.assignee,
       status: 'Non validé'
     });
+    
+    if (newTask.value.assignee) {
+      if (!project.value.users) {
+        project.value.users = [];
+      }
+      if (!project.value.userIds.includes(newTask.value.assignee)) {
+        project.value.userIds.push(newTask.value.assignee);
+      }
+    }
+    
     saveData();
     resetTaskForm();
   }
@@ -154,6 +164,19 @@ const deleteTask = (index) => {
 const assignTask = (index) => {
   const assignee = prompt('Entrez le nom de l\'utilisateur à assigner :');
   if (assignee) {
+    const userExists = users.value.some(user => user.username === assignee);
+    if (!userExists) {
+      alert('Cet utilisateur n\'existe pas.');
+      return;
+    }
+
+    if (!project.value.users) {
+      project.value.users = [];
+    }
+    if (!project.value.userIds.includes(assignee)) {
+      project.value.userIds.push(assignee);
+    }
+
     project.value.tasks[index].assignee = assignee;
     saveData();
   }
