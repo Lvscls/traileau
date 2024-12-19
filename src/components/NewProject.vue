@@ -1,8 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import useUserStore from '../store/userStore'
+import useProjectsStore from '../store/projectsStore'
 
-const projects = ref([]);
+const projectsStore = useProjectsStore()
 const newProject = ref({
   name: "",
   description: "",
@@ -15,7 +16,7 @@ const today = new Date().toISOString().split('T')[0];
 onMounted(() => {
   const savedProjects = localStorage.getItem("projects");
   if (savedProjects) {
-    projects.value = JSON.parse(savedProjects);
+    projectsStore.projects = JSON.parse(savedProjects);
   }
 });
 
@@ -28,6 +29,7 @@ const createProject = () => {
   };
 
   emit('project-created', project);
+  projectsStore.addProject(project);
 
   newProject.value = {
     name: "",

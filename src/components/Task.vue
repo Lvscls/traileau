@@ -55,7 +55,9 @@
   const drawerVisible = ref(false);
   
   const openDrawer = () => {
+    if (!event.target.closest('button')) {
     drawerVisible.value = true;
+  }
   };
   
   const closeDrawer = () => {

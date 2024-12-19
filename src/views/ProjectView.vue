@@ -3,26 +3,22 @@ import { ref, onMounted, computed } from 'vue'
 import NewProject from '../components/NewProject.vue'
 import ListProjects from '../components/ListProjects.vue'
 import useUserStore from '../store/userStore'
+import useProjectsStore from '../store/projectsStore'
 
 const showNewProjectForm = ref(false)
-const projects = ref([])
 const userStore = useUserStore()
+const projectsStore = useProjectsStore()
 
 onMounted(() => {
-  const savedProjects = localStorage.getItem('projects')
-  if (savedProjects) {
-    projects.value = JSON.parse(savedProjects)
-  }
+  projectsStore.loadProjects()
 })
 
 const handleProjectCreated = (project) => {
-  projects.value.push(project)
-  localStorage.setItem('projects', JSON.stringify(projects.value))
   showNewProjectForm.value = false
 }
 
 const filteredProjects = computed(() => {
-  return projects.value.filter(project =>
+  return projectsStore.projects.filter(project =>
     project.userIds?.includes(userStore.currentUser.username)
   )
 })
