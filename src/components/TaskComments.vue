@@ -14,11 +14,17 @@ const props = defineProps({
 
 const emit = defineEmits(['add-comment']);
 
+const user = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Anonyme' };
+
+console.log(user);
+
+console.log(user.username);
+
 const newComment = ref('');
 
 const handleAddComment = () => {
   if (newComment.value.trim()) {
-    emit('add-comment', { taskId: props.taskId, text: newComment.value });
+    emit('add-comment', { taskId: props.taskId, text: newComment.value, author: user.username });
     newComment.value = '';
   }
 };
@@ -29,7 +35,7 @@ const handleAddComment = () => {
     <h3 class="text-lg font-semibold text-gray-800">Commentaires</h3>
     <ul class="space-y-2 mt-2">
       <li v-for="(comment, index) in comments" :key="index" class="p-2 border border-gray-200 rounded-md">
-        <p class="text-gray-700">{{ comment.text }}</p>
+        <p class="text-gray-700"><strong>{{ comment.author }}: </strong>{{ comment.text }}</p>
       </li>
     </ul>
     <div class="mt-4">

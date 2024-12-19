@@ -76,7 +76,7 @@
                 </button>
               </div>
             </div>
-            <TaskComments :taskId="task.id" :comments="task.comments || []" @add-comment="addComment"/>
+            <TaskComments :taskId="task.id" :comments="task.comments || []" @add-comment="addComment" />
 
           </li>
         </ul>
@@ -103,7 +103,7 @@ const addComment = (comment) => {
   const task = project.value.tasks.find(t => t.id === comment.taskId);
   if (task) {
     task.comments = task.comments || [];
-    task.comments.push({text: comment.text});
+    task.comments.push({text: comment.text, author: comment.author});
     saveData();
   }
 };
