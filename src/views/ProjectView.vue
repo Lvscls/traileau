@@ -22,7 +22,7 @@ const handleProjectCreated = (project) => {
 }
 
 const filteredProjects = computed(() => {
-  return projects.value.filter(project => 
+  return projects.value.filter(project =>
     project.userIds?.includes(userStore.currentUser.username)
   )
 })
@@ -36,7 +36,7 @@ const isManager = computed(() => {
   <div class="max-w-3xl mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold text-gray-800">Liste des projets</h1>
-      <button 
+      <button
         @click="showNewProjectForm = !showNewProjectForm"
         class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
         v-if="isManager"
@@ -45,9 +45,9 @@ const isManager = computed(() => {
       </button>
     </div>
 
-    <NewProject 
-      v-if="showNewProjectForm" 
-      @project-created="handleProjectCreated" 
+    <NewProject
+      v-if="showNewProjectForm"
+      @project-created="handleProjectCreated"
     />
 
     <div class="mt-8">
@@ -57,5 +57,5 @@ const isManager = computed(() => {
 </template>
 
 <style scoped>
-    
+
 </style>
