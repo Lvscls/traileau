@@ -47,7 +47,7 @@
                   | Assigné à : {{ task.assignee }}
                 </span>
               </div>
-              
+
               <div class="space-x-2">
                 <button 
                   v-if="task.status !== 'Validé'"
@@ -74,8 +74,10 @@
                 >
                   Assigner
                 </button>
-              </div>
+              </div>   
             </div>
+            <TaskComments :taskId="task.id" :comments="task.comments || []" @add-comment="addComment" />
+
           </li>
         </ul>
       </div>
@@ -86,7 +88,13 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-
+import TaskComments from '../components/TaskComments.vue';
+const props = defineProps({
+  project: {
+    type: Object,
+    required: true,
+  },
+});
 const project = ref({});
 const users = ref([]);
 const newTask = ref({
@@ -96,6 +104,15 @@ const newTask = ref({
 const editIndex = ref(null);
 const route = useRoute();
 
+
+const addComment = (comment) => {
+  const task = props.project.tasks.find(t => t.id === comment.taskId);
+  if (task) {
+    task.comments = task.comments || [];
+    task.comments.push({ text: comment.text });
+    saveData();
+  }
+};
 
 onMounted(() => {
   loadData();
@@ -151,7 +168,7 @@ const assignTask = (index) => {
 const saveData = () => {
   const projects = JSON.parse(localStorage.getItem('projects')) || [];
   const updatedProjects = projects.map(p => 
-    p.id === project.value.id ? project.value : p
+    p.id === props.project.id ? props.project : p
   );
   localStorage.setItem('projects', JSON.stringify(updatedProjects));
 };
