@@ -15,9 +15,15 @@ const isOverdue = (deadline) => {
 
 const isDueSoon = (deadline) => {
   const today = new Date();
+  today.setHours(0, 0, 0, 0); // on met minuit pour s'assurer que c'est comparable
+
   const dueDate = new Date(deadline);
+  dueDate.setHours(0, 0, 0, 0); // on met minuit pour s'assurer que c'est comparable
+
   const timeDiff = dueDate - today;
   const daysDiff = timeDiff / (1000 * 3600 * 24);
+  console.log(daysDiff);
+
   return daysDiff <= 3 && daysDiff >= 0;
 };
 
