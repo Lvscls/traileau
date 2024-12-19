@@ -16,10 +16,6 @@ const emit = defineEmits(['add-comment']);
 
 const user = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Anonyme' };
 
-console.log(user);
-
-console.log(user.username);
-
 const newComment = ref('');
 
 const handleAddComment = () => {
