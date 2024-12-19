@@ -1,6 +1,6 @@
 <script setup>
-import { ref, watch, onMounted } from "vue";
-import useUserStore from '../store/userStore';
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 const props = defineProps({
   projectId: {
@@ -9,26 +9,30 @@ const props = defineProps({
   },
 });
 
+const route = useRoute();
+const router = useRouter();
+onMounted(() => {
+  loadData();
+});
+
 const editProject = ref({
-  id: "",
   name: "",
   description: "",
   deadline: "",
 });
-const userStore = useUserStore();
+
+  const loadData = () => {
+  const projects = JSON.parse(localStorage.getItem('projects')) || [];
+  const projectId = route.params.id;
+  const project = projects.find(p => p.id === projectId) || { tasks: [] };
+  console.log(project);
+  editProject.value = { ...project };
+};
+
+
 const emit = defineEmits(['project-updated']);
 const today = new Date().toISOString().split('T')[0];
 
-onMounted(() => {
-  const savedProjects = localStorage.getItem('projects');
-  if (savedProjects) {
-    const projects = JSON.parse(savedProjects);
-    const project = projects.find(p => p.id === props.projectId);
-    if (project) {
-      editProject.value = { ...project };
-    }
-  }
-});
 
 const updateProject = () => {
   const savedProjects = localStorage.getItem('projects');
@@ -38,8 +42,10 @@ const updateProject = () => {
     projects[projectIndex] = { ...editProject.value };
     localStorage.setItem('projects', JSON.stringify(projects));
     emit('project-updated', editProject.value);
+    router.push('/projects');
   }
 };
+
 </script>
 
 <template>
