@@ -11,7 +11,8 @@ function handleRegister(e) {
     e.preventDefault();
     const newUser = {
         username: e.target.username.value,
-        password: e.target.password.value
+        password: e.target.password.value,
+        role: e.target.role.value
     };
 
     const users = JSON.parse(localStorage.getItem('users')) || [];

@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
+import useUserStore from '../store/userStore'
 
 const projects = ref([]);
 const newProject = ref({
@@ -7,6 +8,8 @@ const newProject = ref({
   description: "",
   deadline: "",
 });
+const userStore = useUserStore();
+const emit = defineEmits(['project-created']);
 
 onMounted(() => {
   const savedProjects = localStorage.getItem("projects");
@@ -20,11 +23,10 @@ const createProject = () => {
     id: crypto.randomUUID(),
     ...newProject.value,
     createdAt: new Date().toISOString(),
+    userIds: [userStore.currentUser.username]
   };
 
-  projects.value.push(project);
-
-  localStorage.setItem("projects", JSON.stringify(projects.value));
+  emit('project-created', project);
 
   newProject.value = {
     name: "",

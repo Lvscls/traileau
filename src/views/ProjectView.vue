@@ -1,10 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import NewProject from '../components/NewProject.vue'
 import ListProjects from '../components/ListProjects.vue'
+import useUserStore from '../store/userStore'
 
 const showNewProjectForm = ref(false)
 const projects = ref([])
+const userStore = useUserStore()
 
 onMounted(() => {
   const savedProjects = localStorage.getItem('projects')
@@ -18,6 +20,16 @@ const handleProjectCreated = (project) => {
   localStorage.setItem('projects', JSON.stringify(projects.value))
   showNewProjectForm.value = false
 }
+
+const filteredProjects = computed(() => {
+  return projects.value.filter(project => 
+    project.userIds?.includes(userStore.currentUser.username)
+  )
+})
+
+const isManager = computed(() => {
+  return userStore.currentUser.role === 'manager' || userStore.currentUser.role === 'manager/développeur'
+})
 </script>
 
 <template>
@@ -27,6 +39,7 @@ const handleProjectCreated = (project) => {
       <button 
         @click="showNewProjectForm = !showNewProjectForm"
         class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+        v-if="isManager"
       >
         {{ showNewProjectForm ? 'Fermer' : 'Nouveau projet' }}
       </button>
@@ -38,7 +51,7 @@ const handleProjectCreated = (project) => {
     />
 
     <div class="mt-8">
-      <ListProjects :projects="projects" />
+      <ListProjects :projects="filteredProjects" />
     </div>
   </div>
 </template>
