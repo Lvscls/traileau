@@ -96,6 +96,24 @@ const useProjectsStore = defineStore("projects", () => {
     }
   }
 
+  function updateTaskStatus(projectId, taskId, newStatus) {
+    const project = projects.value.find((p) => p.id === projectId);
+
+    if (project) {
+      console.log(project.tasks);
+
+      const task = project.tasks?.find(
+        (t) => t.id.toString() === taskId.toString()
+      );
+      console.log(task);
+
+      if (task) {
+        task.status = newStatus;
+        localStorage.setItem("projects", JSON.stringify(projects.value));
+      }
+    }
+  }
+
   // Load current projects from localStorage when the store is initialized
   loadProjects();
 
@@ -110,6 +128,7 @@ const useProjectsStore = defineStore("projects", () => {
     addComment,
     deleteTask,
     assignTask,
+    updateTaskStatus,
   };
 });
 
