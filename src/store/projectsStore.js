@@ -20,7 +20,7 @@ const useProjectsStore = defineStore("projects", () => {
   }
 
   function updateProject(updatedProject) {
-    const index = projects.value.findIndex(p => p.id === updatedProject.id);
+    const index = projects.value.findIndex((p) => p.id === updatedProject.id);
     if (index !== -1) {
       projects.value[index] = updatedProject;
       localStorage.setItem("projects", JSON.stringify(projects.value));
@@ -28,8 +28,40 @@ const useProjectsStore = defineStore("projects", () => {
   }
 
   function deleteProject(projectId) {
-    projects.value = projects.value.filter(p => p.id !== projectId);
+    projects.value = projects.value.filter((p) => p.id !== projectId);
     localStorage.setItem("projects", JSON.stringify(projects.value));
+  }
+
+  function addTask(projectId, newTask) {
+    const project = projects.value.find((p) => p.id === projectId);
+    if (project && newTask.title.trim()) {
+      project.tasks = project.tasks || [];
+      project.tasks.push({
+        id: Date.now(),
+        title: newTask.title,
+        assignee: newTask.assignee,
+        status: "À valider",
+      });
+      localStorage.setItem("projects", JSON.stringify(projects.value));
+    }
+  }
+
+  function addComment(projectId, comment) {
+    console.log(comment);
+
+    const project = projects.value.find((p) => p.id === projectId);
+    if (project) {
+      const task = project.tasks?.find((t) => t.id === comment.taskId);
+
+      if (task) {
+        task.comments = task.comments || [];
+        task.comments.push({
+          text: comment.text,
+          author: comment.author,
+        });
+      }
+      localStorage.setItem("projects", JSON.stringify(projects.value));
+    }
   }
 
   // Load current projects from localStorage when the store is initialized
@@ -39,9 +71,11 @@ const useProjectsStore = defineStore("projects", () => {
   return {
     projects,
     loadProjects,
+    addTask,
     addProject,
     updateProject,
-    deleteProject
+    deleteProject,
+    addComment,
   };
 });
 

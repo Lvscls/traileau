@@ -33,7 +33,7 @@
       </div>
 
       <TaskList
-        :tasks="project.tasks"
+        :tasks="tasks"
         @onValidateTask="validateTask"
         @onEditTask="editTask"
         @onDeleteTask="deleteTask"
@@ -45,18 +45,39 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import TaskList from '../components/TaskList.vue';
+import useProjectsStore from '../store/projectsStore';
+
+
+const projectsStore = useProjectsStore()
 
 const project = ref({});
 const users = ref([]);
+const tasks = ref([]);
 const newTask = ref({
   title: '',
   assignee: ''
 });
 const editIndex = ref(null);
 const route = useRoute();
+
+
+
+//surveille les changements dans le store
+watch(
+  () => projectsStore.projects,
+  (newProjects) => {
+    console.log("icci");
+    
+    const projectId = route.params.id;
+    project.value = newProjects.find((p) => p.id === projectId) || { tasks: [] };
+    tasks.value = project.value.tasks || [];
+  },
+  { deep: true, immediate: true }
+);
+
 
 const addComment = (comment) => {
   const task = project.value.tasks.find(t => t.id === comment.taskId);
@@ -81,13 +102,13 @@ const loadData = () => {
 
 const addTask = () => {
   if (newTask.value.title.trim()) {
-    project.value.tasks.push({
-      id: Date.now(),
+    const projectId = route.params.id;
+
+    projectsStore.addTask(projectId, {
       title: newTask.value.title,
       assignee: newTask.value.assignee,
       status: 'À valider'
-    });
-    saveData();
+    })
     resetTaskForm();
   }
 };

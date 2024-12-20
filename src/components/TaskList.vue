@@ -1,37 +1,29 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed } from 'vue';
 import Task from './Task.vue';
-import { useRoute } from 'vue-router';
   
-const tasks = ref([]);
-const route = useRoute();
-
-onMounted(() => {
-  loadData();
+const props = defineProps({
+  tasks: {
+    type: Array,
+    required: true
+  }
 });
 
-  const loadData = () => {
-  const projects = JSON.parse(localStorage.getItem('projects')) || [];
-  const projectId = route.params.id;
-  const project = projects.find(p => p.id === projectId) || { tasks: [] };
-  tasks.value = project.tasks || [];
-};
 
 const emit = defineEmits(['onValidateTask', 'onEditTask', 'onDeleteTask', 'onAssignTask', 'onAddComment']);
 
   
-  console.log(tasks.value);
   
   const tasksToValidate = computed(() => {
-    return tasks.value.filter(task => task.status === 'À valider');
+    return props.tasks.filter(task => task.status === 'À valider');
   });
   
   const completedTasks = computed(() => {
-    return tasks.value.filter(task => task.status === 'Complétée');
+    return props.tasks.filter(task => task.status === 'Complétée');
   });
   
   const validatedTasks = computed(() => {
-    return tasks.value.filter(task => task.status === 'Validé');
+    return props.tasks.filter(task => task.status === 'Validé');
   });
   
   

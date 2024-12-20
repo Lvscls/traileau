@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue';
+import useProjectsStore from '../store/projectsStore';
+import { useRoute } from 'vue-router';
 
 const props = defineProps({
   taskId: {
@@ -12,15 +14,23 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['add-comment']);
 
-const user = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Anonyme' };
+
+const projectsStore = useProjectsStore()
+const route = useRoute();
+
+
+
+
 
 const newComment = ref('');
 
 const handleAddComment = () => {
   if (newComment.value.trim()) {
-    emit('add-comment', { taskId: props.taskId, text: newComment.value, author: user.username });
+    const projectId = route.params.id;
+    const user = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Anonyme' };
+
+    projectsStore.addComment(projectId, {taskId: props.taskId, text: newComment.value, author: user.username });
     newComment.value = '';
   }
 };

@@ -26,6 +26,9 @@
   import TaskComments from './TaskComments.vue';
   const { visible, task } = defineProps(['visible', 'task'])
   
+
+  console.log(task.id);
+  
   const emit = defineEmits(['close', 'add-comment']);
   
   const close = () => {
