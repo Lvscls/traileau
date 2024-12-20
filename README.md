@@ -1,4 +1,4 @@
-# Nom du Projet
+# Traileau
 
 ## Description
 Ce projet a été développé par Enzo Herichard, Tom Lebrun, Lilian Vasconcelos et Arthur Ferreira Macias.
