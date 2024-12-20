@@ -18,6 +18,9 @@ const handleProjectCreated = (project) => {
 }
 
 const filteredProjects = computed(() => {
+  if (isManager.value) {
+    return projectsStore.projects;
+  }
   return projectsStore.projects.filter(project =>
     project.userIds?.includes(userStore.currentUser.username)
   )

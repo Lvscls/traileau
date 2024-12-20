@@ -7,7 +7,11 @@
             <div class="relative w-screen max-w-lg">
               <div class="h-full flex flex-col bg-white shadow-2xl overflow-hidden">
                 <div class="px-6 py-8 sm:px-8 bg-indigo-700">
-                  <h2 class="text-xl font-semibold text-white">{{ task.title }}</h2>
+                  <h2 class="text-xl font-semibold text-white">
+                    {{ task.title }} 
+                    <span :class="{'bg-blue-500': task.status === 'Validée', 'bg-yellow-500': task.status === 'À valider', 'bg-green-500': task.status === 'Complétée'}" class="inline-block w-3 h-3 rounded-full ml-2"></span>
+                  </h2>
+                  <p class="text-white">assigné à : {{task.assignee }}</p>
                   <div class="mt-4 flex space-x-4" v-if="isManager">
                     <button @click.stop="deleteTask" class="btn btn-red">Supprimer</button>
                     <button @click.stop="assignTask" class="btn btn-gray">Assigner</button>
