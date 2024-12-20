@@ -46,9 +46,41 @@ const useProjectsStore = defineStore("projects", () => {
     }
   }
 
-  function addComment(projectId, comment) {
-    console.log(comment);
+  const assignTask = (projectId, taskId) => {
+    const project = projects.value.find((p) => p.id === projectId);
 
+    if (project) {
+      const task = project.tasks.find((t) => t.id === taskId);
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      if (task) {
+        const assignee = prompt("Entrez le nom de l'utilisateur à assigner :");
+        if (assignee) {
+          const userExists = users.some((user) => user.username === assignee);
+          if (!userExists) {
+            alert("Cet utilisateur n'existe pas.");
+            return;
+          }
+          task.assignee = assignee;
+          localStorage.setItem("projects", JSON.stringify(projects.value));
+        }
+      }
+    }
+  };
+
+  const deleteTask = (projectId, taskId) => {
+    const project = projects.value.find((p) => p.id === projectId);
+
+    if (project) {
+      const taskIndex = project.tasks?.findIndex((t) => t.id === taskId);
+
+      if (taskIndex > -1) {
+        project.tasks.splice(taskIndex, 1);
+        localStorage.setItem("projects", JSON.stringify(projects.value));
+      }
+    }
+  };
+
+  function addComment(projectId, comment) {
     const project = projects.value.find((p) => p.id === projectId);
     if (project) {
       const task = project.tasks?.find((t) => t.id === comment.taskId);
@@ -76,6 +108,8 @@ const useProjectsStore = defineStore("projects", () => {
     updateProject,
     deleteProject,
     addComment,
+    deleteTask,
+    assignTask,
   };
 });
 

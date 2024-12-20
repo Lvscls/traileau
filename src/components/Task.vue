@@ -30,28 +30,9 @@
       type: Object,
       required: true,
     },
-    onValidate: {
-      type: Function,
-      required: true,
-    },
-    onEdit: {
-      type: Function,
-      required: true,
-    },
-    onDelete: {
-      type: Function,
-      required: true,
-    },
-    onAssign: {
-      type: Function,
-      required: true,
-    },
-    onAddComment: {
-      type: Function,
-      required: true,
-    },
   });
-  
+  const emit = defineEmits(['onDelete']);
+
   const drawerVisible = ref(false);
   
   const openDrawer = () => {
@@ -73,11 +54,11 @@
   };
   
   const deleteTask = () => {
-    props.onDelete();
+    emit('onDelete')
   };
   
   const assignTask = () => {
-    props.onAssign();
+    emit('onAssign')
   };
   
   const addComment = (comment) => {

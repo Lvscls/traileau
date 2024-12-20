@@ -34,11 +34,6 @@
 
       <TaskList
         :tasks="tasks"
-        @onValidateTask="validateTask"
-        @onEditTask="editTask"
-        @onDeleteTask="deleteTask"
-        @onAssignTask="assignTask"
-        @onAddComment="addComment"
       />
     </div>
   </div>
@@ -69,7 +64,6 @@ const route = useRoute();
 watch(
   () => projectsStore.projects,
   (newProjects) => {
-    console.log("icci");
     
     const projectId = route.params.id;
     project.value = newProjects.find((p) => p.id === projectId) || { tasks: [] };
@@ -78,15 +72,6 @@ watch(
   { deep: true, immediate: true }
 );
 
-
-const addComment = (comment) => {
-  const task = project.value.tasks.find(t => t.id === comment.taskId);
-  if (task) {
-    task.comments = task.comments || [];
-    task.comments.push({text: comment.text, author: comment.author});
-    saveData();
-  }
-};
 
 onMounted(() => {
   loadData();
@@ -113,42 +98,8 @@ const addTask = () => {
   }
 };
 
-const validateTask = (index) => {
-  project.value.tasks[index].status = 'Validé';
-  saveData();
-};
 
-const editTask = (index) => {
-  editIndex.value = index;
-  newTask.value.title = project.value.tasks[index].title;
-  newTask.value.assignee = project.value.tasks[index].assignee;
-};
 
-const deleteTask = (index) => {
-  project.value.tasks.splice(index, 1);
-  saveData();
-};
-
-const assignTask = (index) => {
-  const assignee = prompt("Entrez le nom de l'utilisateur à assigner :");
-  if (assignee) {
-    const userExists = users.value.some(user => user.username === assignee);
-    if (!userExists) {
-      alert("Cet utilisateur n'existe pas.");
-      return;
-    }
-    project.value.tasks[index].assignee = assignee;
-    saveData();
-  }
-};
-
-const saveData = () => {
-  const projects = JSON.parse(localStorage.getItem('projects')) || [];
-  const updatedProjects = projects.map(p =>
-    p.id === project.value.id ? project.value : p
-  );
-  localStorage.setItem('projects', JSON.stringify(updatedProjects));
-};
 
 const resetTaskForm = () => {
   newTask.value = { title: '', assignee: '' };

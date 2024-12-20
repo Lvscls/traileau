@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from 'vue';
 import Task from './Task.vue';
+import { useRoute } from 'vue-router';
+import useProjectsStore from '../store/projectsStore';
   
 const props = defineProps({
   tasks: {
@@ -9,11 +11,9 @@ const props = defineProps({
   }
 });
 
+const route = useRoute();
+const projectsStore = useProjectsStore()
 
-const emit = defineEmits(['onValidateTask', 'onEditTask', 'onDeleteTask', 'onAssignTask', 'onAddComment']);
-
-  
-  
   const tasksToValidate = computed(() => {
     return props.tasks.filter(task => task.status === 'À valider');
   });
@@ -26,7 +26,20 @@ const emit = defineEmits(['onValidateTask', 'onEditTask', 'onDeleteTask', 'onAss
     return props.tasks.filter(task => task.status === 'Validé');
   });
   
+
+  const handleDeleteTask = (task) => {
+    
+    const projectId = route.params.id;
+    projectsStore.deleteTask(projectId, task.id);
+  };
   
+
+
+  const handleAssignTask = (task) => {
+    
+    const projectId = route.params.id;
+    projectsStore.assignTask(projectId, task.id);
+  };
   </script>
 
 <template>
@@ -38,6 +51,9 @@ const emit = defineEmits(['onValidateTask', 'onEditTask', 'onDeleteTask', 'onAss
             v-for="(task, index) in tasksToValidate"
             :key="task.id"
             :task="task"
+            @onDelete="handleDeleteTask(task)"
+            @onAssign="handleAssignTask(task)"
+
           />
         </ul>
       </div>
@@ -50,8 +66,8 @@ const emit = defineEmits(['onValidateTask', 'onEditTask', 'onDeleteTask', 'onAss
             :task="task"
             @onValidate="validateTask(index)"
             @onEdit="editTask(index)"
-            @onDelete="deleteTask(index)"
-            @onAssign="assignTask(index)"
+            @onDelete="handleDeleteTask(task)"
+            @onAssign="handleAssignTask(task)"
             @onAddComment="addComment"
           />
         </ul>
@@ -65,8 +81,8 @@ const emit = defineEmits(['onValidateTask', 'onEditTask', 'onDeleteTask', 'onAss
             :task="task"
             @onValidate="validateTask(index)"
             @onEdit="editTask(index)"
-            @onDelete="deleteTask(index)"
-            @onAssign="assignTask(index)"
+            @onDelete="handleDeleteTask(task)"
+            @onAssign="handleAssignTask(task)"
             @onAddComment="addComment"
           />
         </ul>
