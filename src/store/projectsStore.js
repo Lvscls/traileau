@@ -42,6 +42,7 @@ const useProjectsStore = defineStore("projects", () => {
         assignee: newTask.assignee,
         status: "À valider",
       });
+      project.userIds.push(newTask.assignee)
       localStorage.setItem("projects", JSON.stringify(projects.value));
     }
   }
@@ -61,6 +62,7 @@ const useProjectsStore = defineStore("projects", () => {
             return;
           }
           task.assignee = assignee;
+          project.userIds.push(assignee)
           localStorage.setItem("projects", JSON.stringify(projects.value));
         }
       }

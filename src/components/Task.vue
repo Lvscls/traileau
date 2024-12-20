@@ -12,7 +12,7 @@
       </div>
       <div class="space-x-2 mt-3">
         <button @click.stop="editTask" class="btn btn-indigo">Modifier</button>
-        <button @click="openDrawer"class="btn btn-indigo">Détail</button>
+        <button @click.stop="openDrawer"class="btn btn-indigo">Détail</button>
       </div>
     <TaskDrawer @delete="deleteTask" @assign="assignTask" :visible="drawerVisible" :task="task" @close="closeDrawer" @add-comment="addComment"/>
   </li>
@@ -31,10 +31,9 @@ const emit = defineEmits(['onDelete', 'onAssign', 'onDragStart']);
 const drawerVisible = ref(false);
 
 const openDrawer = (event) => {
-  if (!event.target.closest('button')) {
     drawerVisible.value = true;
-  }
-};
+}
+
 
 const closeDrawer = () => drawerVisible.value = false;
 
