@@ -4,6 +4,7 @@
       <h1 class="text-3xl font-extrabold text-gray-900 text-center">
         Tableau de bord : {{ project.name }}
       </h1>
+      <p>Date limite : {{ project.deadline }}</p>
 
       <div class="flex justify-center" v-if="isManager">
         <button @click="showModal = true" class="btn btn-indigo">Ajouter une tâche</button>
