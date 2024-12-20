@@ -1,5 +1,37 @@
-# Vue 3 + Vite
+# Nom du Projet
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Description
+Ce projet a été développé par Enzo Herichard, Tom Lebrun, Lilian Vasconcelos et Arthur Ferreira Macias.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Prérequis
+Avant de lancer le projet, assurez-vous d'avoir installé les éléments suivants :
+- NodeJS
+
+## Installation
+1. Clonez le dépôt :
+   ```bash
+   git clone https://github.com/Lvscls/traileau
+   ```
+2. Accédez au répertoire du projet :
+   ```bash
+   cd traileau
+   ```
+3. Installez les dépendances :
+   ```bash
+   npm install
+   ```
+
+## Lancement du Projet
+Pour lancer le projet, utilisez la commande suivante :
+```bash
+    npm run dev
+```
+
+
+## Auteurs
+- Enzo Herichard
+- Tom Lebrun
+- Lilian Vasconcelos
+- Arthu Ferreira Macias
+
+
