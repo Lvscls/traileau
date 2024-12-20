@@ -2,7 +2,7 @@
   <div class="grid grid-cols-3 gap-4">
     <!-- Colonne : Tâches à valider -->
     <div class="p-4 bg-gray-100 rounded" @drop="onDrop($event, 'À valider')" @dragover.prevent>
-      <h3 class="text-xl font-bold text-gray-900">Tâches à valider</h3>
+      <h3 class="text-xl font-bold text-gray-900 text-center">Tâches à valider</h3>
       <ul class="space-y-3">
         <Task
           v-for="task in tasksToValidate"
@@ -16,7 +16,7 @@
 
     <!-- Colonne : Tâches complétées -->
     <div class="p-4 bg-gray-100 rounded" @drop="onDrop($event, 'Complétée')" @dragover.prevent>
-      <h3 class="text-xl font-bold text-gray-900">Tâches complétées</h3>
+      <h3 class="text-xl font-bold text-gray-900 text-center">Tâches complétées</h3>
       <ul class="space-y-3">
         <Task
           v-for="task in completedTasks"
@@ -30,7 +30,7 @@
 
     <!-- Colonne : Tâches validées -->
     <div class="p-4 bg-gray-100 rounded" @drop="onDrop($event, 'Validé')" @dragover.prevent>
-      <h3 class="text-xl font-bold text-gray-900">Tâches validées</h3>
+      <h3 class="text-xl font-bold text-gray-900 text-center">Tâches validées</h3>
       <ul class="space-y-3">
         <Task
           v-for="task in validatedTasks"

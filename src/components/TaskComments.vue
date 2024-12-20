@@ -37,13 +37,15 @@ const handleAddComment = () => {
 </script>
 
 <template>
-  <div class="task-comments">
-    <h3 class="text-lg font-semibold text-gray-800">Commentaires</h3>
-    <ul class="space-y-2 mt-2">
-      <li v-for="(comment, index) in comments" :key="index" class="p-2 border border-gray-200 rounded-md">
-        <p class="text-gray-700"><strong>{{ comment.author }}: </strong>{{ comment.text }}</p>
-      </li>
-    </ul>
+  <div class="task-comments flex flex-col justify-between h-full">
+    <div>
+      <h3 class="text-lg font-semibold text-gray-800">Commentaires</h3>
+      <ul class="space-y-2 mt-2 overflow-auto max-h-48">
+        <li v-for="(comment, index) in comments" :key="index" class="p-2 border border-gray-200 rounded-md">
+          <p class="text-gray-700"><strong>{{ comment.author }}: </strong>{{ comment.text }}</p>
+        </li>
+      </ul>
+    </div>
     <div class="mt-4">
       <textarea
         v-model="newComment"
@@ -64,4 +66,5 @@ const handleAddComment = () => {
 .task-comments {
   margin-top: 1rem;
 }
+
 </style>

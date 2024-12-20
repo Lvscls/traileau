@@ -82,15 +82,23 @@ const deleteProject = (projectId) => {
           class="px-3 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           v-if="isManager"
         >
-          Edit
+          Modifier
         </button>
         <button
           @click="deleteProject(project.id)"
           class="px-3 py-1 text-sm text-white bg-red-600 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           v-if="isManager"
         >
-          Delete
+          Supprimer
         </button>
+        <router-link :to="{ name: 'ProjectDetails', params: { id: project.id } }">
+            <button
+            @click="editProject(project)"
+            class="px-3 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Détail
+          </button>
+      </router-link>
       </div>
     </div>
   </div>

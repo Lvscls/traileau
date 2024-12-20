@@ -1,28 +1,20 @@
 <template>
   <li
-    class="p-4 border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow"
+    class="p-4 border bg-white border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow cursor-grab"
     draggable="true"
     @dragstart="onDragStart"
-    @click="openDrawer"
   >
-    <div class="flex justify-between items-center">
-      <div>
-        <strong class="text-gray-900">{{ task.title }}</strong>
-        <span :class="{'text-green-600 font-medium': task.status === 'Validé'}" class="ml-2">
-          {{ task.status }}
-        </span>
-        <span v-if="task.assignee" class="text-gray-600 ml-2">
-          | Assigné à : {{ task.assignee }}
-        </span>
+    <div class="flex flex-col space-y-2">
+        <div class="text-gray-900 font-bold">{{ task.title }}</div>
+        <div v-if="task.assignee" class="text-gray-600 ml-2">
+          Assigné à : {{ task.assignee }}
+        </div>
       </div>
-      <div class="space-x-2">
-        <button v-if="task.status !== 'Validé'" @click.stop="validateTask" class="text-sm text-blue-600 hover:underline">Valider</button>
+      <div class="space-x-2 mt-3">
         <button @click.stop="editTask" class="btn btn-indigo">Modifier</button>
-        <button @click.stop="deleteTask" class="btn btn-red">Supprimer</button>
-        <button @click.stop="assignTask" class="btn btn-gray">Assigner</button>
+        <button @click="openDrawer"class="btn btn-indigo">Détail</button>
       </div>
-    </div>
-    <TaskDrawer :visible="drawerVisible" :task="task" @close="closeDrawer" @add-comment="addComment"/>
+    <TaskDrawer @delete="deleteTask" @assign="assignTask" :visible="drawerVisible" :task="task" @close="closeDrawer" @add-comment="addComment"/>
   </li>
 </template>
 
