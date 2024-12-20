@@ -42,7 +42,7 @@ const useProjectsStore = defineStore("projects", () => {
         assignee: newTask.assignee,
         status: "À valider",
       });
-      project.userIds.push(newTask.assignee)
+      project.userIds.push(newTask.assignee);
       localStorage.setItem("projects", JSON.stringify(projects.value));
     }
   }
@@ -62,7 +62,22 @@ const useProjectsStore = defineStore("projects", () => {
             return;
           }
           task.assignee = assignee;
-          project.userIds.push(assignee)
+          project.userIds.push(assignee);
+          localStorage.setItem("projects", JSON.stringify(projects.value));
+        }
+      }
+    }
+  };
+
+  const updatetask = (projectId, taskId) => {
+    const project = projects.value.find((p) => p.id === projectId);
+
+    if (project) {
+      const task = project.tasks.find((t) => t.id === taskId);
+      if (task) {
+        const newName = prompt("Entrez le nouveau titre de la tache :");
+        if (newName) {
+          task.title = newName;
           localStorage.setItem("projects", JSON.stringify(projects.value));
         }
       }
@@ -131,6 +146,7 @@ const useProjectsStore = defineStore("projects", () => {
     deleteTask,
     assignTask,
     updateTaskStatus,
+    updatetask,
   };
 });
 

@@ -6,10 +6,12 @@
       <ul class="space-y-3">
         <Task
           v-for="task in tasksToValidate"
+          :status="'À valider'"
           :key="task.id"
           :task="task"
           @onDelete="handleDeleteTask(task)"
           @onAssign="handleAssignTask(task)"
+          @onEdit="handleEditTask(task)"
         />
       </ul>
     </div>
@@ -22,8 +24,10 @@
           v-for="task in completedTasks"
           :key="task.id"
           :task="task"
+          :status="'Complétée'"
           @onDelete="handleDeleteTask(task)"
           @onAssign="handleAssignTask(task)"
+          @onEdit="handleEditTask(task)"
         />
       </ul>
     </div>
@@ -36,8 +40,10 @@
           v-for="task in validatedTasks"
           :key="task.id"
           :task="task"
+          :status="'Validé'"
           @onDelete="handleDeleteTask(task)"
           @onAssign="handleAssignTask(task)"
+          @onEdit="handleEditTask(task)"
         />
       </ul>
     </div>
@@ -49,6 +55,16 @@ import { computed } from 'vue';
 import Task from './Task.vue';
 import { useRoute } from 'vue-router';
 import useProjectsStore from '../store/projectsStore';
+import useUserStore from '../store/userStore';
+
+const userStore = useUserStore()
+
+const isManager = computed(() => {
+  return (
+    userStore.currentUser.role === "manager" ||
+    userStore.currentUser.role === "manager/développeur"
+  );
+});
 
 const props = defineProps({
   tasks: { type: Array, required: true },
@@ -69,9 +85,19 @@ const handleAssignTask = (task) => {
   projectsStore.assignTask(route.params.id, task.id);
 };
 
+const handleEditTask = (task) => {
+  projectsStore.updatetask(route.params.id, task.id);
+};
+
+
+
 const onDrop = (event, newStatus) => {
   const taskId = event.dataTransfer.getData('taskId');
   
+  if(!isManager.value && newStatus === 'Validé') {    
+    return;
+  }
+
   if (taskId) {
     projectsStore.updateTaskStatus(route.params.id, taskId, newStatus);
   }

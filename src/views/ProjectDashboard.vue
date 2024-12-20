@@ -5,7 +5,7 @@
         Tableau de bord : {{ project.name }}
       </h1>
 
-      <div class="flex justify-center">
+      <div class="flex justify-center" v-if="isManager">
         <button @click="showModal = true" class="btn btn-indigo">Ajouter une tâche</button>
       </div>
         
@@ -64,14 +64,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import TaskList from '../components/TaskList.vue';
 import useProjectsStore from '../store/projectsStore';
+import useUserStore from '../store/userStore';
 
 const showModal = ref(false);
 
 const projectsStore = useProjectsStore()
+const userStore = useUserStore()
 
 const project = ref({});
 const users = ref([]);
@@ -83,7 +85,12 @@ const newTask = ref({
 const editIndex = ref(null);
 const route = useRoute();
 
-
+const isManager = computed(() => {
+  return (
+    userStore.currentUser.role === "manager" ||
+    userStore.currentUser.role === "manager/développeur"
+  );
+});
 
 //surveille les changements dans le store
 watch(

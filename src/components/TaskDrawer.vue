@@ -2,17 +2,18 @@
     <transition name="slide">
       <div v-if="visible" class="fixed inset-0 overflow-hidden">
         <div class="absolute inset-0 overflow-hidden">
-          <div class="absolute inset-0 bg-gray-700 bg-opacity-80 transition-opacity" @click="close"></div>
+          <div class="absolute inset-0 bg-gray-700 bg-opacity-80 transition-opacity" @click.stop="close"></div>
           <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex">
             <div class="relative w-screen max-w-lg">
               <div class="h-full flex flex-col bg-white shadow-2xl overflow-hidden">
                 <div class="px-6 py-8 sm:px-8 bg-indigo-700">
                   <h2 class="text-xl font-semibold text-white">{{ task.title }}</h2>
-                  <div class="mt-4 flex space-x-4">
+                  <div class="mt-4 flex space-x-4" v-if="isManager">
                     <button @click.stop="deleteTask" class="btn btn-red">Supprimer</button>
                     <button @click.stop="assignTask" class="btn btn-gray">Assigner</button>
+                    <button @click.stop="editTask" class="btn btn-indigo">Modifier</button>
                   </div>
-                  <button @click="close" class="absolute top-4 right-4 text-white">X</button>
+                  <button @click.stop="close" class="absolute top-4 right-4 text-white">X</button>
                 </div>
                 <div class="px-6 py-8 sm:px-8 h-full">
                   <p class="text-gray-700">{{ task.description }}</p>
@@ -27,10 +28,18 @@
 </template>
   
   <script setup>
-  import TaskComments from './TaskComments.vue';
+  import { computed } from 'vue';
+import TaskComments from './TaskComments.vue';
+import useUserStore from '../store/userStore';
   const { visible, task } = defineProps(['visible', 'task'])
-  
+  const userStore = useUserStore()
 
+  const isManager = computed(() => {
+  return (
+    userStore.currentUser.role === "manager" ||
+    userStore.currentUser.role === "manager/développeur"
+  );
+});
   const emit = defineEmits(['close', 'add-comment', 'delete', "assign"]);
   
   const close = () => {
@@ -43,6 +52,7 @@
 
   const deleteTask = () => emit('delete');
 const assignTask = () => emit('assign');
+const editTask = () => emit('edit');
   </script>
   
   <style scoped>

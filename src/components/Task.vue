@@ -3,6 +3,7 @@
     class="p-4 border bg-white border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow cursor-grab"
     draggable="true"
     @dragstart="onDragStart"
+    @click="openDrawer"
   >
     <div class="flex flex-col space-y-2">
         <div class="text-gray-900 font-bold">{{ task.title }}</div>
@@ -10,39 +11,49 @@
           Assigné à : {{ task.assignee }}
         </div>
       </div>
-      <div class="space-x-2 mt-3">
-        <button @click.stop="editTask" class="btn btn-indigo">Modifier</button>
-        <button @click.stop="openDrawer"class="btn btn-indigo">Détail</button>
-      </div>
-    <TaskDrawer @delete="deleteTask" @assign="assignTask" :visible="drawerVisible" :task="task" @close="closeDrawer" @add-comment="addComment"/>
+    
+    <TaskDrawer @edit="editTask" @delete="deleteTask" @assign="assignTask" :visible="drawerVisible" :task="task" @close="closeDrawer" @add-comment="addComment"/>
   </li>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import TaskDrawer from './TaskDrawer.vue';
+import useUserStore from '../store/userStore';
 
 const props = defineProps({
   task: { type: Object, required: true },
+  status: { type: String, required: true },
 });
 
-const emit = defineEmits(['onDelete', 'onAssign', 'onDragStart']);
+const emit = defineEmits(['onDelete', 'onAssign', 'onDragStart', 'onEdit']);
 
 const drawerVisible = ref(false);
 
 const openDrawer = (event) => {
+  if (!event.target.closest('button')) {
     drawerVisible.value = true;
+  }
 }
+const userStore = useUserStore()
 
+const isManager = computed(() => {
+  return (
+    userStore.currentUser.role === "manager" ||
+    userStore.currentUser.role === "manager/développeur"
+  );
+});
 
-const closeDrawer = () => drawerVisible.value = false;
+const closeDrawer = () => {
+    drawerVisible.value = false;
+};
 
 const onDragStart = (event) => {
+  if(!isManager.value && props.status === "Validé") return;
   event.dataTransfer.setData('taskId', props.task.id);
   emit('onDragStart', props.task.id);
 };
 
-const validateTask = () => emit('onValidate');
 const editTask = () => emit('onEdit');
 const deleteTask = () => emit('onDelete');
 const assignTask = () => emit('onAssign');
